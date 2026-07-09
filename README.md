@@ -2,7 +2,7 @@
 
 
 
-1. ##### Shift + F10 during set up and run these commands:
+##### 1\. Shift + F10 during set up and run these commands:
 
 
 
