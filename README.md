@@ -64,7 +64,11 @@
 
 
 
-##### 
+##### 6\. Open task scheduler:
+
+
+
+* Create new task "Startup" that begins on login and runs kiosk_launcher.bat(ensure it runs on AND off battery)
 
 
 
