@@ -1,0 +1,18 @@
+$Winlogon = "HKLM:\SOFTWARE\Microsoft\Windows NT\CurrentVersion\Winlogon"
+
+Set-ItemProperty $Winlogon AutoAdminLogon -Value "1"
+Set-ItemProperty $Winlogon DefaultUserName -Value "Kiosk"
+Set-ItemProperty $Winlogon DefaultPassword -Value "Cursor-Fiber4-Polka"
+
+powercfg /change monitor-timeout-ac 0
+powercfg /change monitor-timeout-dc 0
+
+powercfg /change standby-timeout-ac 0
+powercfg /change standby-timeout-dc 0
+
+powercfg /change hibernate-timeout-ac 0
+powercfg /change hibernate-timeout-dc 0
+
+powercfg /requestsoverride PROCESS msedge.exe DISPLAY
+
+20260708155223
