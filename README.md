@@ -1,4 +1,4 @@
-# Paylocity kiosk set up:
+# Radian Paylocity kiosk set up:
 
 
 
