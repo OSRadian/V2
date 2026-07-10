@@ -40,21 +40,59 @@ Send("{Enter}")                 ; tab 3 times to the "approve" button
     global CardCodeLength, CaptureTimeout, CaptureWait
     global RefreshDelay, FieldFocusDelay, FieldX, FieldY
 
+    ConfigFile := "config.ini"
+
+    ; Read the last line of config.ini (timestamp in YYYYMMDDHH24MISS format)
+    RefreshNeeded := false
+
+    if FileExist(ConfigFile)
+    {
+        FileText := FileRead(ConfigFile)
+        Lines := StrSplit(RTrim(FileText, "`r`n"), "`n", "`r")
+        LastLine := Trim(Lines[Lines.Length])
+
+        if (LastLine = "" || DateDiff(A_Now, LastLine, "Hours") >= 2)
+            RefreshNeeded := true
+    }
+    else
+    {
+        ; File doesn't exist yet
+        Lines := []
+        RefreshNeeded := true
+    }
+
     ; Capture card code immediately before it reaches the browser.
-    ; Terminator is now SPACE (a text key) — suppressed by default,
-    ; so it won't leak to the page the way the old Enter did.
     ih := InputHook("L" CardCodeLength " T" CaptureTimeout, "{Space}")
     ih.Start()
     ih.Wait()
     CardCode := ih.Input
 
-    Click(FieldX, FieldY)	; tap the screen to wake from the screensaver
-    Send("^r")                  ; refresh
-    Send("{Enter}")
-    Sleep(RefreshDelay)
-    Send("^0")                  ; recenter and reset MS Edge zoom level
+    ; Refresh Edge only if the timestamp is 2+ hours old
+    if (RefreshNeeded)
+    {
+        Click(FieldX, FieldY)      ; wake screen if needed
+        Send("^r")                 ; refresh page
+        Send("{Enter}")
+        Sleep(RefreshDelay)
+
+        ; Update the timestamp (replace the last line)
+        if (Lines.Length)
+            Lines[Lines.Length] := A_Now
+        else
+            Lines.Push(A_Now)
+
+        FileDelete(ConfigFile)
+        for _, line in Lines
+            FileAppend(line "`r`n", ConfigFile)
+    }
+    
     Click(FieldX, FieldY)
-    Sleep(FieldFocusDelay)      ; give field time to focus
-    Send(CardCode)              ; inject captured code
+    Sleep(300)
+    Send("^0")                     ; reset Edge zoom
+    Click(FieldX, FieldY)
+    Sleep(FieldFocusDelay)
+
+    Send(CardCode)
+    Sleep(500)
     Send("{Enter}")
 }
