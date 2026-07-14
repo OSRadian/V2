@@ -71,8 +71,10 @@ Send("{Enter}")                 ; tab 3 times to the "approve" button
     if (RefreshNeeded)
     {
         Click(FieldX, FieldY)      ; wake screen if needed
+        Sleep(100)
         Send("^r")                 ; refresh page
         Send("{Enter}")
+        Sleep(50)
         Sleep(RefreshDelay)
 
         ; Update the timestamp (replace the last line)
@@ -84,6 +86,8 @@ Send("{Enter}")                 ; tab 3 times to the "approve" button
         FileDelete(ConfigFile)
         for _, line in Lines
             FileAppend(line "`r`n", ConfigFile)
+
+        Sleep(100)
     }
     
     Click(FieldX, FieldY)
