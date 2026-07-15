@@ -6,8 +6,6 @@ git fetch --all
 git reset --hard origin/main
 git clean -fd
 
-echo 1 > "..\1.txt"
-
 powershell -Command "Disable-PnpDevice -InstanceId 'HID\ELAN9038&COL01\5&145F55AC&0&0000' -Confirm:$false"
 taskkill /f /im ScreenClickTest.exe 2>nul
 taskkill /f /im msedge.exe 2>nul
