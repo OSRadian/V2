@@ -6,6 +6,15 @@ git fetch --all
 git reset --hard origin/main
 git clean -fd
 
+powershell -Command ^
+"$b = Get-WmiObject -Namespace root/WMI -Class WmiMonitorBrightnessMethods -ErrorAction SilentlyContinue; if($b){$b.WmiSetBrightness(1,100)}"
+
+powercfg /SETACVALUEINDEX SCHEME_CURRENT SUB_VIDEO ADAPTBRIGHTNESS 0
+powercfg /SETDCVALUEINDEX SCHEME_CURRENT SUB_VIDEO ADAPTBRIGHTNESS 0
+
+powercfg /SETACVALUEINDEX SCHEME_CURRENT SUB_VIDEO VIDEODIM 0
+powercfg /SETDCVALUEINDEX SCHEME_CURRENT SUB_VIDEO VIDEODIM 0
+
 powershell -Command "Disable-PnpDevice -InstanceId 'HID\ELAN9038&COL01\5&145F55AC&0&0000' -Confirm:$false"
 taskkill /f /im ScreenClickTest.exe 2>nul
 taskkill /f /im msedge.exe 2>nul
