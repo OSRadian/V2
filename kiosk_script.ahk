@@ -37,6 +37,7 @@ Send("{Enter}")                 ; tab 3 times to the "approve" button
 
 ; --- RFID badge read ----------------------------------------
 +F1:: {
+    Sleep(200)
     global CardCodeLength, CaptureTimeout, CaptureWait
     global RefreshDelay, FieldFocusDelay, FieldX, FieldY
 
