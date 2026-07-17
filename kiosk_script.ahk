@@ -37,7 +37,6 @@ Send("{Enter}")                 ; tab 3 times to the "approve" button
 
 ; --- RFID badge read ----------------------------------------
 +F1:: {
-    Send("{Esc}")
     ih := InputHook("L" CardCodeLength " T" CaptureTimeout, "{Space}")
     ih.Start()
     ih.Wait()
