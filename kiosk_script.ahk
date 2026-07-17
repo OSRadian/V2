@@ -37,6 +37,11 @@ Send("{Enter}")                 ; tab 3 times to the "approve" button
 
 ; --- RFID badge read ----------------------------------------
 +F1:: {
+    ih := InputHook("L" CardCodeLength " T" CaptureTimeout, "{Space}")
+    ih.Start()
+    ih.Wait()
+    CardCode := ih.Input
+
     Sleep(200)
     global CardCodeLength, CaptureTimeout, CaptureWait
     global RefreshDelay, FieldFocusDelay, FieldX, FieldY
@@ -61,12 +66,6 @@ Send("{Enter}")                 ; tab 3 times to the "approve" button
         Lines := []
         RefreshNeeded := true
     }
-
-    ; Capture card code immediately before it reaches the browser.
-    ih := InputHook("L" CardCodeLength " T" CaptureTimeout, "{Space}")
-    ih.Start()
-    ih.Wait()
-    CardCode := ih.Input
 
     ; Refresh Edge only if the timestamp is 2+ hours old
     if (RefreshNeeded)
