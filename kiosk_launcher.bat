@@ -6,11 +6,11 @@ git fetch --all
 git reset --hard origin/main
 git clean -fd
 
+powershell -Command "Set-ItemProperty -Path 'HKCU:\Control Panel\Desktop' -Name ScreenSaveTimeOut -Value '60'"
+
 powershell -Command "Disable-PnpDevice -InstanceId 'HID\ELAN9038&COL01\5&145F55AC&0&0000' -Confirm:$false"
 taskkill /f /im ScreenClickTest.exe 2>nul
 taskkill /f /im msedge.exe 2>nul
-
-powershell -Command "powercfg /requestsoverride PROCESS msedge.exe DISPLAY"
 
 REM Find kiosk number
 set "KIOSKNUM="
