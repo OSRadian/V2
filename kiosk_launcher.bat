@@ -30,7 +30,16 @@ if defined KIOSKNUM (
 
 timeout /t 15 /nobreak
 
-start "" "%USERPROFILE%\Desktop\V2\kiosk_script.exe"
 start "" "msedge.exe" --kiosk "https://webtime2.paylocity.com/WebTime/Login/WebClock" --edge-kiosk-type=fullscreen
+
+:WaitForWindow
+tasklist /V /FI "IMAGENAME eq msedge.exe" | find /I "WebClock" >nul
+if errorlevel 1 (
+    timeout /t 1 /nobreak >nul
+    goto WaitForWindow
+)
+
+start "" "%USERPROFILE%\Desktop\V2\kiosk_script.exe"
+
 timeout /t 45 /nobreak
 powershell -Command "Enable-PnpDevice -InstanceId 'HID\ELAN9038&COL01\5&145F55AC&0&0000' -Confirm:$false"
