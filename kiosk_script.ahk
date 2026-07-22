@@ -4,22 +4,22 @@
 ; ============================================
 
 ; --- Load configuration -------------------------------------
-configFile := A_ScriptDir "\config.ini"
+global ConfigFile := A_ScriptDir "\config.ini"
 
-UserId   := IniRead(configFile, "Login", "UserId")
-Kiosk    := IniRead(configFile, "Login", "Kiosk")
-Password := IniRead(configFile, "Login", "Password")
+UserId   := IniRead(ConfigFile, "Login", "UserId")
+Kiosk    := IniRead(ConfigFile, "Login", "Kiosk")
+Password := IniRead(ConfigFile, "Login", "Password")
 
-StartupDelay      := Integer(IniRead(configFile, "Timing", "StartupDelay", 20000))
-CameraPromptDelay := Integer(IniRead(configFile, "Timing", "CameraPromptDelay", 10000))
-RefreshDelay      := Integer(IniRead(configFile, "Timing", "RefreshDelay", 1500))
-FieldFocusDelay   := Integer(IniRead(configFile, "Timing", "FieldFocusDelay", 200))
+StartupDelay      := Integer(IniRead(ConfigFile, "Timing", "StartupDelay", 20000))
+CameraPromptDelay := Integer(IniRead(ConfigFile, "Timing", "CameraPromptDelay", 10000))
+RefreshDelay      := Integer(IniRead(ConfigFile, "Timing", "RefreshDelay", 1500))
+FieldFocusDelay   := Integer(IniRead(ConfigFile, "Timing", "FieldFocusDelay", 200))
 
-CardCodeLength := IniRead(configFile, "Input", "CardCodeLength", 32)
-CaptureTimeout := IniRead(configFile, "Input", "CaptureTimeout", 2)
+CardCodeLength := IniRead(ConfigFile, "Input", "CardCodeLength", 32)
+CaptureTimeout := IniRead(ConfigFile, "Input", "CaptureTimeout", 2)
 
-FieldX := Integer(IniRead(configFile, "Click", "FieldX", 954))
-FieldY := Integer(IniRead(configFile, "Click", "FieldY", 592))
+FieldX := Integer(IniRead(ConfigFile, "Click", "FieldX", 954))
+FieldY := Integer(IniRead(ConfigFile, "Click", "FieldY", 592))
 
 ; --- Auto-login on startup ----------------------------------
 Sleep(StartupDelay)             ; wait for Edge and page to fully load
@@ -35,20 +35,39 @@ Send("{Tab}")
 Send("{Tab}")
 Send("{Enter}")                 ; tab 3 times to the "approve" button
 
-; --- RFID badge read ----------------------------------------
-+F1:: {
-    ih := InputHook("L" CardCodeLength " T" CaptureTimeout, "{Space}")
-    ih.Start()
-    ih.Wait()
-    CardCode := ih.Input
+global CardBuffer := ""
 
-    Sleep(300)
-    global CardCodeLength, CaptureTimeout, CaptureWait
+#HotIf
+0::AppendDigit("0")
+1::AppendDigit("1")
+2::AppendDigit("2")
+3::AppendDigit("3")
+4::AppendDigit("4")
+5::AppendDigit("5")
+6::AppendDigit("6")
+7::AppendDigit("7")
+8::AppendDigit("8")
+9::AppendDigit("9")
+
+Space::FinishScan()
+
+AppendDigit(digit)
+{
+    global CardBuffer
+    CardBuffer .= digit
+}
+
+FinishScan()
+{
+    global CardBuffer, ConfigFile
     global RefreshDelay, FieldFocusDelay, FieldX, FieldY
+    
+    if (CardBuffer = "")
+        return
+        
+    CardCode := CardBuffer
+    
 
-    ConfigFile := "config.ini"
-
-    ; Read the last line of config.ini (timestamp in YYYYMMDDHH24MISS format)
     RefreshNeeded := false
 
     if FileExist(ConfigFile)
@@ -62,22 +81,19 @@ Send("{Enter}")                 ; tab 3 times to the "approve" button
     }
     else
     {
-        ; File doesn't exist yet
         Lines := []
         RefreshNeeded := true
     }
 
-    ; Refresh Edge only if the timestamp is 2+ hours old
     if (RefreshNeeded)
     {
-        Click(FieldX, FieldY)      ; wake screen if needed
+        Click(FieldX, FieldY)
         Sleep(100)
-        Send("^r")                 ; refresh page
+        Send("^r")
         Send("{Enter}")
         Sleep(50)
         Sleep(RefreshDelay)
 
-        ; Update the timestamp (replace the last line)
         if (Lines.Length)
             Lines[Lines.Length] := A_Now
         else
@@ -89,14 +105,17 @@ Send("{Enter}")                 ; tab 3 times to the "approve" button
 
         Sleep(100)
     }
-    
+
     Click(FieldX, FieldY)
     Sleep(300)
-    Send("^0")                     ; reset Edge zoom
+    Send("^0")
     Click(FieldX, FieldY)
     Sleep(FieldFocusDelay)
 
-    Send(CardCode)
-    Sleep(500)
+    Sleep(1000)
+
+    SendText(CardCode)
     Send("{Enter}")
+
+    CardBuffer := ""
 }
