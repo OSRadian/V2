@@ -5,6 +5,8 @@
 
 ; --- Load configuration -------------------------------------
 global ConfigFile := A_ScriptDir "\config.ini"
+global CardCaptureEnabled := false
+global CardBuffer := ""
 
 UserId   := IniRead(ConfigFile, "Login", "UserId")
 Kiosk    := IniRead(ConfigFile, "Login", "Kiosk")
@@ -34,10 +36,9 @@ Send("{Tab}")
 Send("{Tab}")
 Send("{Tab}")
 Send("{Enter}")                 ; tab 3 times to the "approve" button
+CardCaptureEnabled := true
 
-global CardBuffer := ""
-
-#HotIf
+#HotIf CardCaptureEnabled
 0::AppendDigit("0")
 1::AppendDigit("1")
 2::AppendDigit("2")
@@ -59,12 +60,13 @@ AppendDigit(digit)
 
 FinishScan()
 {
-    global CardBuffer, ConfigFile
+    global CardBuffer
+    global ConfigFile := A_ScriptDir "\config.ini"
     global RefreshDelay, FieldFocusDelay, FieldX, FieldY
     
     if (CardBuffer = "")
         return
-        
+
     CardCode := CardBuffer
     
 
