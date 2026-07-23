@@ -93,8 +93,27 @@ FinishScan()
         Sleep(100)
         Send("^r")
         Send("{Enter}")
-        Sleep(50)
-        Sleep(RefreshDelay)
+
+        Send("^r")
+        Send("{Enter}")
+
+        stable := 0
+
+        Sleep(40)
+
+        Loop
+        {
+            Sleep(70)
+            color := PixelGetColor(FieldX, 350)
+
+            if (color = 0xEFEFEF)
+                stable++
+            else
+                stable := 0
+
+            if (stable >= 5) ; EFEFEF for ~1 second
+                break
+        }
 
         if (Lines.Length)
             Lines[Lines.Length] := A_Now
