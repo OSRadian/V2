@@ -7,6 +7,9 @@ powershell -Command "$b = Get-WmiObject -Namespace root/WMI -Class WmiMonitorBri
 
 powershell -Command "New-ItemProperty -Path 'HKCU:\Software\Policies\Microsoft\Windows\Control Panel\Desktop' -Name ScreenSaveTimeOut -Value '60' -PropertyType String -Force"
 
+powershell -Command "powercfg /SETACVALUEINDEX SCHEME_CURRENT SUB_PROCESSOR PROCTHROTTLEMAX 95"
+powershell -Command "powercfg /SETACTIVE SCHEME_CURRENT"
+
 powershell -Command "Disable-PnpDevice -InstanceId 'HID\ELAN9038&COL01\5&145F55AC&0&0000' -Confirm:$false"
 taskkill /f /im ScreenClickTest.exe 2>nul
 taskkill /f /im msedge.exe 2>nul
