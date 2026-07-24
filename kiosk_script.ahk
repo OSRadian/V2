@@ -25,8 +25,9 @@ FieldY := Integer(IniRead(ConfigFile, "Click", "FieldY", 592))
 
 ; --- Auto-login on startup ----------------------------------
 Sleep(StartupDelay)             ; wait for Edge and page to fully load
+Sleep(200)
 Click(980, 302)
-Sleep(5000)
+Sleep(10000)
 Send(UserId)                    ; first field is auto in focus on load
 Send("{Tab}")
 Send(Kiosk)
