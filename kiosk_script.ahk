@@ -92,9 +92,7 @@ FinishScan()
         Click(FieldX, FieldY)
         Sleep(100)
         Send("^r")
-        Send("{Enter}")
-
-        Send("^r")
+        Sleep(100)
         Send("{Enter}")
 
         stable := 0
