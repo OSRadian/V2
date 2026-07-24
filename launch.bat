@@ -20,7 +20,7 @@ set "KIOSKNUM="
 for %%F in ("%USERPROFILE%\Desktop\?.txt") do (
     if "%%~nF" GEQ "1" if "%%~nF" LEQ "7" (
         set "KIOSKNUM=%%~nF"
-        goto :FoundKiosk`
+        goto :FoundKiosk
     )
 )
 
