@@ -1,18 +1,17 @@
 @echo off
 
-powershell -Command "Set-ItemProperty -Path 'HKCU:\Control Panel\Desktop' -Name ScreenSaveTimeOut -Value '60'"
-
-powershell -Command "powercfg /requestsoverride PROCESS msedge.exe DISPLAY"
 powershell -Command "$b = Get-WmiObject -Namespace root/WMI -Class WmiMonitorBrightnessMethods -ErrorAction SilentlyContinue; if($b){$b.WmiSetBrightness(1,90)}"
-
-powershell -Command "New-ItemProperty -Path 'HKCU:\Software\Policies\Microsoft\Windows\Control Panel\Desktop' -Name ScreenSaveTimeOut -Value '60' -PropertyType String -Force"
-
-powershell -Command "powercfg /SETACVALUEINDEX SCHEME_CURRENT SUB_PROCESSOR PROCTHROTTLEMAX 95"
-powershell -Command "powercfg /SETACTIVE SCHEME_CURRENT"
 
 powershell -Command "Disable-PnpDevice -InstanceId 'HID\ELAN9038&COL01\5&145F55AC&0&0000' -Confirm:$false"
 taskkill /f /im ScreenClickTest.exe 2>nul
 taskkill /f /im msedge.exe 2>nul
+
+:WaitForEdgeExit
+tasklist /FI "IMAGENAME eq msedge.exe" | find /I "msedge.exe" >nul
+if not errorlevel 1 (
+    timeout /t 1 /nobreak >nul
+    goto WaitForEdgeExit
+)
 
 REM Find kiosk number
 set "KIOSKNUM="
@@ -32,15 +31,46 @@ if defined KIOSKNUM (
 
 timeout /t 15 /nobreak
 
+set /a LaunchAttempts=0
+
+:LaunchEdge
+set /a LaunchAttempts+=1
+set /a WaitSeconds=0
+
+echo Starting Edge (Attempt %LaunchAttempts%)...
+
 start "" "msedge.exe" --kiosk "https://webtime2.paylocity.com/WebTime/Login/WebClock" --edge-kiosk-type=fullscreen
 
 :WaitForWindow
 tasklist /V /FI "IMAGENAME eq msedge.exe" | find /I "WebClock" >nul
-if errorlevel 1 (
-    timeout /t 1 /nobreak >nul
-    goto WaitForWindow
+if not errorlevel 1 goto EdgeReady
+
+timeout /t 1 /nobreak >nul
+set /a WaitSeconds+=1
+
+if %WaitSeconds% GEQ 60 (
+    echo Edge did not load within 60 seconds. Restarting...
+
+    taskkill /f /im msedge.exe >nul 2>&1
+
+    :WaitForRestartExit
+    tasklist /FI "IMAGENAME eq msedge.exe" | find /I "msedge.exe" >nul
+    if not errorlevel 1 (
+        timeout /t 1 /nobreak >nul
+        goto WaitForRestartExit
+    )
+
+    if %LaunchAttempts% GEQ 3 (
+        echo Failed to launch Edge after 3 attempts.
+        exit /b 1
+    )
+
+    goto LaunchEdge
 )
 
+goto WaitForWindow
+
+:EdgeReady
 start "" "%USERPROFILE%\Desktop\V2\kiosk_script.exe"
 
 timeout /t 45 /nobreak
