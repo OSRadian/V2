@@ -29,7 +29,7 @@ Send("^r")
 Sleep(100)
 Send("{Enter}")
 Sleep(1500)
-Click(980, 302)
+; Click(980, 302)
 Sleep(10000)
 Send(UserId)                    ; first field is auto in focus on load
 Send("{Tab}")
@@ -37,7 +37,7 @@ Send(Kiosk)
 Send("{Tab}")
 Send(Password)
 Send("{Enter}")
-Sleep(CameraPromptDelay)        ; wait for camera permissions prompt to open
+Sleep(CameraPromptDelay)        ; wait for camera permissions prompt to openg
 Send("{Tab}")
 Send("{Tab}")
 Send("{Tab}")
