@@ -138,9 +138,10 @@ FinishScan()
     Click(FieldX, FieldY)
     Sleep(FieldFocusDelay)
 
-    Sleep(1000)
+    Sleep(400)
 
     SendText(CardCode)
+    Sleep(300)
     Send("{Enter}")
 
     CardBuffer := ""
