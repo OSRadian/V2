@@ -6,8 +6,6 @@ powershell -Command "Disable-PnpDevice -InstanceId 'HID\ELAN9038&COL01\5&145F55A
 taskkill /f /im ScreenClickTest.exe 2>nul
 taskkill /f /im msedge.exe 2>nul
 
-powershell -ExecutionPolicy Bypass -File setcamera.ps1
-
 :WaitForEdgeExit
 tasklist /FI "IMAGENAME eq msedge.exe" | find /I "msedge.exe" >nul
 if not errorlevel 1 (
