@@ -75,8 +75,6 @@ FinishScan()
 
     CardCode := CardBuffer
 
-    enterCardInfo(CardCode)
-
     if FileExist(ConfigFile)
     {
         FileText := FileRead(ConfigFile)
@@ -95,12 +93,28 @@ FinishScan()
     if (RefreshNeeded)
     {
         Click(FieldX, FieldY)
-        Sleep(750)
+        Sleep(100)
         Send("^r")
         Sleep(400)
         Send("{Enter}")
 
+        stable := 0
+
         Sleep(40)
+
+        Loop
+        {
+            Sleep(200)
+            color := PixelGetColor(FieldX, 350)
+
+            if (color = 0xEFEFEF)
+                stable++
+            else
+                stable := 0
+
+            if (stable >= 30) ; EFEFEF for ~1 second
+                break
+        }
 
         if (Lines.Length)
             Lines[Lines.Length] := A_Now
@@ -111,17 +125,15 @@ FinishScan()
         for _, line in Lines
             FileAppend(line "`r`n", ConfigFile)
 
-        Sleep(3500)
+        Sleep(100)
     }
 
     enterCardInfo(CardCode)
 }
 
-
-
 enterCardInfo(CardCode)
 {
-    global CardBuffer, FieldX, FieldY, FieldFocusDelay
+    global FieldX, FieldY, FieldFocusDelay
 
     Sleep(300)
     Click(FieldX, FieldY)
@@ -133,8 +145,6 @@ enterCardInfo(CardCode)
 
     SendText(CardCode)
     Sleep(300)
-    Send("{Enter}")
-    Sleep(100)
     Send("{Enter}")
 
     CardBuffer := ""
