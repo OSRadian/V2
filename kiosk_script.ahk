@@ -75,8 +75,6 @@ FinishScan()
 
     CardCode := CardBuffer
 
-    enterCardInfo(CardCode)
-
     if FileExist(ConfigFile)
     {
         FileText := FileRead(ConfigFile)
@@ -127,7 +125,6 @@ enterCardInfo(CardCode)
     Click(FieldX, FieldY)
     Sleep(300)
     Send("^0")
-    Click(FieldX, FieldY)
 
     Sleep(FieldFocusDelay)
 
