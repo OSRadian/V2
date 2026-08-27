@@ -81,7 +81,7 @@ FinishScan()
         Lines := StrSplit(RTrim(FileText, "`r`n"), "`n", "`r")
         LastLine := Trim(Lines[Lines.Length])
 
-        if (LastLine = "" || DateDiff(A_Now, LastLine, "Hours") >= 4)
+        if (LastLine = "" || DateDiff(A_Now, LastLine, "Days") >= 4)
             RefreshNeeded := true
     }
     else
