@@ -22,6 +22,9 @@ globalCaptureTimeout := IniRead(ConfigFile, "Input", "CaptureTimeout", 2)
 
 global FieldX := Integer(IniRead(ConfigFile, "Click", "FieldX", 954))
 global FieldY := Integer(IniRead(ConfigFile, "Click", "FieldY", 592))
+global LastDailyRefresh := ""
+
+SetTimer(CheckDailyRefresh, 30000)
 
 ; --- Auto-login on startup ----------------------------------
 Sleep(StartupDelay)             ; wait for Edge and page to fully load
@@ -68,53 +71,10 @@ FinishScan()
 {
     global CardBuffer, ConfigFile, FieldX, FieldY
 
-    if (CardBuffer = "")
-        return
-
-    RefreshNeeded := false
-
     CardCode := CardBuffer
-
-    if FileExist(ConfigFile)
-    {
-        FileText := FileRead(ConfigFile)
-        Lines := StrSplit(RTrim(FileText, "`r`n"), "`n", "`r")
-        LastLine := Trim(Lines[Lines.Length])
-
-        if (LastLine = "" || DateDiff(A_Now, LastLine, "Days") >= 4)
-            RefreshNeeded := true
-    }
-    else
-    {
-        Lines := []
-        RefreshNeeded := true
-    }
-
-    if (RefreshNeeded)
-    {
-        Click(FieldX, FieldY)
-        Sleep(750)
-        Send("^r")
-        Sleep(400)
-        Send("{Enter}")
-
-        Sleep(40)
-
-        if (Lines.Length)
-            Lines[Lines.Length] := A_Now
-        else
-            Lines.Push(A_Now)
-
-        FileDelete(ConfigFile)
-        for _, line in Lines
-            FileAppend(line "`r`n", ConfigFile)
-
-        Sleep(3500)
-    }
 
     enterCardInfo(CardCode)
 }
-
 
 
 enterCardInfo(CardCode)
@@ -135,4 +95,27 @@ enterCardInfo(CardCode)
     Send("{Enter}")
 
     CardBuffer := ""
+}
+
+CheckDailyRefresh()
+{
+    global LastDailyRefresh, FieldX, FieldY
+
+    CurrentTime := FormatTime(, "HH:mm")
+    CurrentDate := FormatTime(, "yyyyMMdd")
+
+    ; Only refresh between 5:00 and 5:00:59 AM
+    if (CurrentTime = "03:30" && LastDailyRefresh != CurrentDate)
+    {
+        LastDailyRefresh := CurrentDate
+
+        Click(FieldX, FieldY)
+        Sleep(750)
+
+        Send("^r")
+        Sleep(400)
+        Send("{Enter}")
+
+        Sleep(3500)
+    }
 }
