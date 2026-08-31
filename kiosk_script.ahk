@@ -105,7 +105,7 @@ CheckDailyRefresh()
     CurrentDate := FormatTime(, "yyyyMMdd")
 
     ; Only refresh between 5:00 and 5:00:59 AM
-    if (CurrentTime = "03:30" && LastDailyRefresh != CurrentDate)
+    if (CurrentTime = "03:38" && LastDailyRefresh != CurrentDate)
     {
         LastDailyRefresh := CurrentDate
 
