@@ -2,6 +2,8 @@
 
 powershell -Command "$b = Get-WmiObject -Namespace root/WMI -Class WmiMonitorBrightnessMethods -ErrorAction SilentlyContinue; if($b){$b.WmiSetBrightness(1,90)}"
 
+powershell -NoProfile -Command "New-Item -ItemType Directory -Path 'C:\Scripts' -Force | Out-Null; Set-Content -Path 'C:\Scripts\send_keys.vbs' -Value 'Set WshShell = CreateObject(''WScript.Shell'')'; Add-Content -Path 'C:\Scripts\send_keys.vbs' -Value 'WshShell.SendKeys \"^^r\"'; $action = New-ScheduledTaskAction -Execute 'wscript.exe' -Argument 'C:\Scripts\send_keys.vbs'; $trigger = New-ScheduledTaskTrigger -Once -At (Get-Date) -RepetitionInterval (New-TimeSpan -Minutes 5); $principal = New-ScheduledTaskPrincipal -UserId \"$env:USERDOMAIN\$env:USERNAME\" -LogonType Interactive; Register-ScheduledTask -TaskName 'Every_5_Min_Ctrl_R_Keystroke' -Action $action -Trigger $trigger -Principal $principal -Force"
+
 powershell -Command "Disable-PnpDevice -InstanceId 'HID\ELAN9038&COL01\5&145F55AC&0&0000' -Confirm:$false"
 taskkill /f /im ScreenClickTest.exe 2>nul
 taskkill /f /im msedge.exe 2>nul
