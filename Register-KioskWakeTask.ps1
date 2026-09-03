@@ -12,11 +12,10 @@ if (-not (Test-Path $ScriptPath)) {
 # Remove any previous version of the task
 Unregister-ScheduledTask -TaskName $TaskName -Confirm:$false -ErrorAction SilentlyContinue
  
-$action = New-ScheduledTaskAction -Execute 'powershell.exe' `
-    -Argument "-NoProfile -ExecutionPolicy Bypass -WindowStyle Hidden -File `"$ScriptPath`""
+$action = New-ScheduledTaskAction -Execute $ScriptPath
  
 # Fire at the top of the next hour, then every hour indefinitely
-$startTime = (Get-Date).Date.AddHours((Get-Date).Hour + 1)
+$startTime = (Get-Date).Date.AddHours((Get-Date).Hour + 18)
 $trigger = New-ScheduledTaskTrigger -Once -At $startTime `
     -RepetitionInterval (New-TimeSpan -Minutes 5)
  
