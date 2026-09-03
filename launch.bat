@@ -2,7 +2,7 @@
 
 powershell -Command "$b = Get-WmiObject -Namespace root/WMI -Class WmiMonitorBrightnessMethods -ErrorAction SilentlyContinue; if($b){$b.WmiSetBrightness(1,90)}"
 
-$A=New-ScheduledTaskAction -Execute "$env:USERPROFILE\Desktop\V2\Refresh\runWake.bat"; $T=New-ScheduledTaskTrigger -Once -At (Get-Date) -RepetitionInterval (New-TimeSpan -Minutes 5) -RepetitionDuration ([TimeSpan]::MaxValue); $P=New-ScheduledTaskPrincipal -UserId "$env:USERDOMAIN\$env:USERNAME" -LogonType Interactive -RunLevel Highest; $S=New-ScheduledTaskSettingsSet -AllowStartIfOnBatteries -DontStopIfGoingOnBatteries; Register-ScheduledTask -TaskName "Hourly_Kiosk_Wake" -Action $A -Trigger $T -Principal $P -Settings $S -Force
+powershell -Command "$A=New-ScheduledTaskAction -Execute '$env:USERPROFILE\Desktop\V2\Refresh\runWake.bat'; $T=New-ScheduledTaskTrigger -Once -At (Get-Date) -RepetitionInterval (New-TimeSpan -Minutes 5) -RepetitionDuration ([TimeSpan]::MaxValue); $P=New-ScheduledTaskPrincipal -UserId \"$env:USERDOMAIN\$env:USERNAME\" -LogonType Interactive -RunLevel Highest; $S=New-ScheduledTaskSettingsSet -AllowStartIfOnBatteries -DontStopIfGoingOnBatteries; Register-ScheduledTask -TaskName 'Hourly_Kiosk_Wake' -Action $A -Trigger $T -Principal $P -Settings $S -Force"
 
 powershell -Command "Disable-PnpDevice -InstanceId 'HID\ELAN9038&COL01\5&145F55AC&0&0000' -Confirm:$false"
 taskkill /f /im ScreenClickTest.exe 2>nul
