@@ -22,9 +22,6 @@ globalCaptureTimeout := IniRead(ConfigFile, "Input", "CaptureTimeout", 2)
 
 global FieldX := Integer(IniRead(ConfigFile, "Click", "FieldX", 954))
 global FieldY := Integer(IniRead(ConfigFile, "Click", "FieldY", 592))
-global LastDailyRefresh := ""
-
-SetTimer(CheckDailyRefresh, 30000)
 
 ; --- Auto-login on startup ----------------------------------
 Sleep(StartupDelay)             ; wait for Edge and page to fully load
@@ -95,27 +92,4 @@ enterCardInfo(CardCode)
     Send("{Enter}")
 
     CardBuffer := ""
-}
-
-CheckDailyRefresh()
-{
-    global LastDailyRefresh, FieldX, FieldY
-
-    CurrentTime := FormatTime(, "HH:mm")
-    CurrentDate := FormatTime(, "yyyyMMdd")
-
-    ; Only refresh between 5:00 and 5:00:59 AM
-    if (CurrentTime = "02:00" && LastDailyRefresh != CurrentDate)
-    {
-        LastDailyRefresh := CurrentDate
-
-        Click(FieldX, FieldY)
-        Sleep(750)
-
-        Send("^r")
-        Sleep(400)
-        Send("{Enter}")
-
-        Sleep(3500)
-    }
 }

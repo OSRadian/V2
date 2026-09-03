@@ -2,7 +2,7 @@
 
 powershell -Command "$b = Get-WmiObject -Namespace root/WMI -Class WmiMonitorBrightnessMethods -ErrorAction SilentlyContinue; if($b){$b.WmiSetBrightness(1,90)}"
 
-powershell -NoProfile -Command "$scriptPath = Join-Path $env:USERPROFILE 'Desktop\V2\send_keys.vbs'; $action = New-ScheduledTaskAction -Execute 'wscript.exe' -Argument (\"`\"$scriptPath`\"\"); $trigger = New-ScheduledTaskTrigger -Once -At (Get-Date) -RepetitionInterval (New-TimeSpan -Minutes 5); $principal = New-ScheduledTaskPrincipal -UserId \"$env:USERDOMAIN\$env:USERNAME\" -LogonType Interactive; Register-ScheduledTask -TaskName 'Every_5_Min_Ctrl_R_Keystroke' -Action $action -Trigger $trigger -Principal $principal -Force"
+$A=New-ScheduledTaskAction -Execute "$env:USERPROFILE\Desktop\V2\Refresh\runWake.bat"; $T=New-ScheduledTaskTrigger -Once -At (Get-Date) -RepetitionInterval (New-TimeSpan -Hours 1) -RepetitionDuration ([TimeSpan]::MaxValue); $P=New-ScheduledTaskPrincipal -UserId "$env:USERDOMAIN\$env:USERNAME" -LogonType Interactive -RunLevel Highest; $S=New-ScheduledTaskSettingsSet -AllowStartIfOnBatteries -DontStopIfGoingOnBatteries; Register-ScheduledTask -TaskName "Hourly_Kiosk_Wake" -Action $A -Trigger $T -Principal $P -Settings $S -Force
 
 powershell -Command "Disable-PnpDevice -InstanceId 'HID\ELAN9038&COL01\5&145F55AC&0&0000' -Confirm:$false"
 taskkill /f /im ScreenClickTest.exe 2>nul
