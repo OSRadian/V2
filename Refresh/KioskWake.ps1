@@ -31,9 +31,9 @@ $edge = Get-Process msedge -ErrorAction SilentlyContinue |
  
 if ($edge) {
     $shell.AppActivate($edge.Id) | Out-Null
-    Start-Sleep -Milliseconds 500
+    Start-Sleep -Milliseconds 250
     $shell.SendKeys('{F5}')
-    Start-Sleep -Milliseconds 750
+    Start-Sleep -Milliseconds 300
     $shell.SendKeys('{ENTER}')
 } else {
     Write-Output "No Edge window found"

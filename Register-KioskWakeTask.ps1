@@ -18,7 +18,7 @@ $action = New-ScheduledTaskAction -Execute 'powershell.exe' `
 # Fire at the top of the next hour, then every hour indefinitely
 $startTime = (Get-Date).Date.AddHours((Get-Date).Hour + 1)
 $trigger = New-ScheduledTaskTrigger -Once -At $startTime `
-    -RepetitionInterval (New-TimeSpan -Hours 1)
+    -RepetitionInterval (New-TimeSpan -Minutes 5)
  
 # Interactive is required — the task must reach the desktop to inject input
 $principal = New-ScheduledTaskPrincipal -UserId $RunAsUser `

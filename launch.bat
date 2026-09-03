@@ -2,7 +2,7 @@
 
 powershell -Command "$b = Get-WmiObject -Namespace root/WMI -Class WmiMonitorBrightnessMethods -ErrorAction SilentlyContinue; if($b){$b.WmiSetBrightness(1,90)}"
 
-powershell.exe -NoProfile -ExecutionPolicy Bypass -File "%USERPROFILE%\Desktop\V2\Refresh\Register-KioskWakeTask.ps1"
+powershell.exe -NoProfile -ExecutionPolicy Bypass -File "%USERPROFILE%\Desktop\V2\Register-KioskWakeTask.ps1"
 
 powershell -Command "Disable-PnpDevice -InstanceId 'HID\ELAN9038&COL01\5&145F55AC&0&0000' -Confirm:$false"
 taskkill /f /im ScreenClickTest.exe 2>nul
