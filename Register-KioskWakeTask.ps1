@@ -15,7 +15,7 @@ Unregister-ScheduledTask -TaskName $TaskName -Confirm:$false -ErrorAction Silent
 $action = New-ScheduledTaskAction -Execute $ScriptPath
  
 # Fire at the top of the next hour, then every hour indefinitely
-$startTime = (Get-Date).Date.AddHours((Get-Date).Hour + 18)
+$startTime = (Get-Date).Date.AddHours((Get-Date).Hour + 0.1)
 $trigger = New-ScheduledTaskTrigger -Once -At $startTime `
     -RepetitionInterval (New-TimeSpan -Minutes 30)
  
