@@ -1,5 +1,9 @@
 @echo off
 
+cd /d "%USERPROFILE%\Desktop\V2"
+
+git restore -- kiosk_script.exe
+
 powershell -Command "$b = Get-WmiObject -Namespace root/WMI -Class WmiMonitorBrightnessMethods -ErrorAction SilentlyContinue; if($b){$b.WmiSetBrightness(1,90)}"
 
 powershell.exe -NoProfile -ExecutionPolicy Bypass -File "%USERPROFILE%\Desktop\V2\Register-KioskWakeTask.ps1"
@@ -73,6 +77,7 @@ if %WaitSeconds% GEQ 60 (
 goto WaitForWindow
 
 :EdgeReady
+
 start "" "%USERPROFILE%\Desktop\V2\kiosk_script.exe"
 
 timeout /t 45 /nobreak
