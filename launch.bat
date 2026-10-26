@@ -8,6 +8,18 @@ powershell -Command "$b = Get-WmiObject -Namespace root/WMI -Class WmiMonitorBri
 
 powershell.exe -NoProfile -ExecutionPolicy Bypass -File "%USERPROFILE%\Desktop\V2\Register-KioskWakeTask.ps1"
 
+powershell.exe -NoProfile -ExecutionPolicy Bypass -Command ^
+ "$wu = 'HKLM:\SOFTWARE\Policies\Microsoft\Windows\WindowsUpdate'; ^
+  $au = Join-Path $wu 'AU'; ^
+  New-Item -Path $wu -Force | Out-Null; ^
+  New-Item -Path $au -Force | Out-Null; ^
+  New-ItemProperty -Path $wu -Name 'UpdateNotificationLevel' -PropertyType DWord -Value 2 -Force | Out-Null; ^
+  New-ItemProperty -Path $wu -Name 'SetActiveHours' -PropertyType DWord -Value 1 -Force | Out-Null; ^
+  New-ItemProperty -Path $wu -Name 'ActiveHoursStart' -PropertyType DWord -Value 5 -Force | Out-Null; ^
+  New-ItemProperty -Path $wu -Name 'ActiveHoursEnd' -PropertyType DWord -Value 23 -Force | Out-Null; ^
+  New-ItemProperty -Path $au -Name 'AUOptions' -PropertyType DWord -Value 4 -Force | Out-Null; ^
+  New-ItemProperty -Path $au -Name 'ScheduledInstallTime' -PropertyType DWord -Value 3 -Force | Out-Null"
+  
 powershell -Command "Disable-PnpDevice -InstanceId 'HID\ELAN9038&COL01\5&145F55AC&0&0000' -Confirm:$false"
 taskkill /f /im ScreenClickTest.exe 2>nul
 taskkill /f /im msedge.exe 2>nul
